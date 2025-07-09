@@ -41,7 +41,6 @@ public class Main {
         Order orderTwo = new Order(UUID.randomUUID(), new HashMap<>() {{
             put(orderItemBanana.productId(), orderItemBanana);
         }});
-
         System.out.println("ORDER: " + order.toString());
 
 
