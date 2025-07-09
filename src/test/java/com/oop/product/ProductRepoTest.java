@@ -79,4 +79,43 @@ class ProductRepoTest {
         assertTrue(productRepo.getAllProducts().contains(product2));
         assertEquals(2, productRepo.getAllProducts().size());
     }
+
+    @Test
+    void checkAvailabilityAndStockQuantity_shouldThrowAnException_whenProductDoesNotExist() {
+        UUID id = UUID.randomUUID();
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> productRepo.checkAvailabilityAndStockQuantity(id,30));
+        assertEquals("Product with id " + id + " does not exist", exception.getMessage());
+    }
+
+    @Test
+    void checkAvailabilityAndStockQuantity_shouldThrowAnException_whenStockQuantityIsNotEnough() {
+        productRepo.addProduct(product);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> productRepo.checkAvailabilityAndStockQuantity(product.id(),50));
+        assertEquals("Product with id " + product.id() + " out of stock", exception.getMessage());
+    }
+
+    @Test
+    void decreaseStockQuantity_shouldThrowAnException_whenProductDoesNotExist() {
+        UUID id = UUID.randomUUID();
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> productRepo.decreaseStockQuantity(id,30));
+        assertEquals("Product with id " + id + " does not exist", exception.getMessage());
+    }
+
+    @Test
+    void decreaseStockQuantity_shouldThrowAnException_whenStockQuantityIsNotEnough() {
+        productRepo.addProduct(product);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> productRepo.checkAvailabilityAndStockQuantity(product.id(),100));
+        assertEquals("Product with id " + product.id() + " out of stock", exception.getMessage());
+    }
+
+
+    @Test
+    void decreaseStockQuantity_shouldDecreaseStockQuantity_whenStockQuantityIsEnough() {
+        productRepo.addProduct(product);
+        Product decreasedProduct =  productRepo.decreaseStockQuantity(product.id(),30);
+        Product updatedProduct = productRepo.getProduct(product.id());
+        assertEquals(decreasedProduct, updatedProduct);
+
+
+    }
 }
