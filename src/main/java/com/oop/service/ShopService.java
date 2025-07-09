@@ -31,7 +31,7 @@ public class ShopService {
         }
 
         orderRepo.addOrder(order);
-        return "Order placed successfully";
+        return "Order placed successfully, the total sum is: " + order.totalSum() + " 💰";
     }
 
 
