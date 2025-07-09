@@ -2,7 +2,7 @@ package com.oop.order;
 
 import java.util.*;
 
-public class OrderRepo {
+public class OrderRepo implements OrderRepoInterface{
     private final Map<UUID, Order> orders = new HashMap<>();
 
     public void addOrder(Order order) {
