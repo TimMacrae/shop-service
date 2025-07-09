@@ -50,7 +50,7 @@ class ShopServiceTest {
         }});
 
         String placedOrder = shopService.placingOrder(order);
-        assertEquals("Order placed successfully", placedOrder);
+        assertEquals("Order placed successfully, the total sum is: 27.50 \uD83D\uDCB0", placedOrder);
     }
 
     @Test
@@ -62,7 +62,7 @@ class ShopServiceTest {
         }});
 
         String placedOrder = shopService.placingOrder(order);
-        assertEquals("Order placed successfully", placedOrder);
+        assertEquals("Order placed successfully, the total sum is: 27.50 \uD83D\uDCB0", placedOrder);
     }
 
     @Test
