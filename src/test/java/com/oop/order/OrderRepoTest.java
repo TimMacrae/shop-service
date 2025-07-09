@@ -15,14 +15,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OrderRepoTest {
 
-    Product product = new Product(UUID.randomUUID(),"milk", "high on magnesium", new BigDecimal("1.25"), 40);
-    Product product2 = new Product(UUID.randomUUID(),"apple", "very sweet", new BigDecimal("3"), 20);
+    OrderItem orderItem = new OrderItem(UUID.randomUUID(),"milk",  new BigDecimal("1.25"), 40);
+    OrderItem orderItem2 = new OrderItem(UUID.randomUUID(),"apple",  new BigDecimal("3"), 20);
     OrderRepo orderRepo;
     Order order = new Order(UUID.randomUUID(), new HashMap<>() {{
-        put(product.id(), product);
+        put(orderItem.productId(), orderItem);
     }});
     Order order2 = new Order(UUID.randomUUID(), new HashMap<>() {{
-        put(product2.id(), product2);
+        put(orderItem2.productId(), orderItem2);
     }});
 
     @BeforeEach

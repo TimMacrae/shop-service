@@ -15,13 +15,13 @@ class OrderTest {
     @Test
     void createOrder_shouldHaveTheCorrectValues() {
         UUID orderId = UUID.randomUUID();
-        Product product = new Product(UUID.randomUUID(), "apple", "very sweet", BigDecimal.ONE, 30);
-        Map<UUID, Product> products = new HashMap<>();
-        products.put(product.id(), product);
+        OrderItem orderItem = new OrderItem(UUID.randomUUID(), "apple",  BigDecimal.ONE,  30);
+        Map<UUID, OrderItem> items = new HashMap<>();
+        items.put(orderItem.productId(), orderItem);
 
-        Order order = new Order(orderId,products );
+        Order order = new Order(orderId, items );
         assertEquals(orderId,order.id());
-        assertEquals(products,order.products());
+        assertEquals(items,order.items());
 
     }
 
