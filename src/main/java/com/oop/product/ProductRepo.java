@@ -1,4 +1,4 @@
-package com.oop;
+package com.oop.product;
 
 import java.util.*;
 
