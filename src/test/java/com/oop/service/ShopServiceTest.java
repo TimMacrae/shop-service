@@ -10,10 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
+import static javax.swing.UIManager.put;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShopServiceTest {
@@ -28,6 +27,9 @@ class ShopServiceTest {
     OrderItem orderItem;
     OrderItem orderItem2;
 
+    // Create some Orders
+    Order order;
+
 
     @BeforeEach
     void setUp() {
@@ -39,6 +41,11 @@ class ShopServiceTest {
 
          productRepo.addProduct(product);
          productRepo.addProduct(product2);
+
+         order = new Order(UUID.randomUUID(), new HashMap<>() {{
+             put(orderItem.productId(), orderItem);
+             put(orderItem2.productId(), orderItem2);
+         }});
     }
 
     @Test
@@ -118,4 +125,73 @@ class ShopServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> shopService.placingOrder(order));
         assertEquals("Product with id " + orderItemTooHighQuantity.productId() + " out of stock", exception.getMessage());
     }
+
+
+    @Test
+    void addOrder_shouldAddAOrder_toOrders() {
+        shopService = new ShopService(orderRepo, productRepo);
+        shopService.addOrder(order);
+        Order addedOrder = shopService.getOrder(order.id());
+        assertEquals(addedOrder, shopService.getOrder(order.id()));
+    }
+
+    @Test
+    void removeOrder_shouldRemoveAOrder_fromOrders() {
+        shopService = new ShopService(orderRepo, productRepo);
+        shopService.addOrder(order);
+        assertEquals(1, shopService.getOrders().size());
+        shopService.removeOrder(order.id());
+        assertEquals(0, shopService.getOrders().size());
+    }
+
+    @Test
+    void getOrder_shouldReturnOrder_fromOrdersRepo() {
+        shopService = new ShopService(orderRepo, productRepo);
+        shopService.addOrder(order);
+        assertEquals(order, shopService.getOrder(order.id()));
+    }
+
+    @Test
+    void getOrder_shouldThrowAnException_ifOrderDoesNotExist() {
+        shopService = new ShopService(orderRepo, productRepo);
+        UUID id = UUID.randomUUID();
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> shopService.getOrder(id));
+        assertEquals("Order with id " + id + " does not exist", exception.getMessage());
+    }
+
+    @Test
+    void getOrders_shouldReturnOrders_fromOrderRepo() {
+        shopService = new ShopService(orderRepo, productRepo);
+        Order order2 = new Order(UUID.randomUUID(), new HashMap<>() {{
+            put(orderItem.productId(), orderItem);
+            put(orderItem2.productId(), orderItem2);
+        }});
+        shopService.addOrder(order);
+        shopService.addOrder(order2);
+        assertEquals(2, shopService.getOrders().size());
+    }
+
+    @Test
+    void getProduct_shouldReturnProduct_fromProductRepo() {
+        shopService = new ShopService(orderRepo, productRepo);
+        assertEquals(product, shopService.getProduct(product.id()));
+    }
+
+    @Test
+    void getAllProducts() {
+        shopService = new ShopService(orderRepo, productRepo);
+        List<Product> products = shopService.getAllProducts();
+        assertEquals(2, products.size());
+        products.forEach(product -> assertEquals(product, productRepo.getProduct(product.id())));
+    }
+
+    @Test
+    void addProduct_shouldAddProduct_toProductRepo() {
+        shopService = new ShopService(orderRepo, productRepo);
+        assertEquals(2, shopService.getAllProducts().size());
+        shopService.addProduct(product);
+        assertEquals(2, shopService.getAllProducts().size());
+    }
+
+
 }
