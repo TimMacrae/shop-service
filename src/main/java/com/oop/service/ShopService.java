@@ -5,7 +5,10 @@ import com.oop.order.OrderRepoInterface;
 import com.oop.product.Product;
 import com.oop.product.ProductRepo;
 
-public class ShopService {
+import java.util.List;
+import java.util.UUID;
+
+public class ShopService implements OrderRepoInterface {
     private final OrderRepoInterface orderRepo;
     private final ProductRepo productRepo;
 
@@ -34,6 +37,32 @@ public class ShopService {
         return "Order placed successfully, the total sum is: " + order.totalSum() + " 💰";
     }
 
+    public void addOrder(Order order) {
+        orderRepo.addOrder(order);
+    }
 
+    public Order getOrder(UUID orderId) {
+        return orderRepo.getOrder(orderId);
+    }
+
+    public List<Order> getOrders() {
+        return orderRepo.getOrders();
+    }
+
+    public void removeOrder(UUID orderId) {
+        orderRepo.removeOrder(orderId);
+    }
+
+    public Product getProduct(UUID productId) {
+       return productRepo.getProduct(productId);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepo.getAllProducts();
+    }
+
+    public void addProduct(Product product) {
+        productRepo.addProduct(product);
+    }
 
 }
