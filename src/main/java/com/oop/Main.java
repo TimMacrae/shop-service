@@ -23,9 +23,9 @@ public class Main {
         Product productTomato = new Product(UUID.randomUUID(), "tomato", "best tomato", new BigDecimal("1.25"), 100);
         Product productApple = new Product(UUID.randomUUID(), "apple", "best apple", new BigDecimal("1.75"), 150);
         Product productBanana = new Product(UUID.randomUUID(), "banana", "best banana", new BigDecimal("2.00"), 80);
-        productRepo.addProduct(productTomato);
-        productRepo.addProduct(productApple);
-        productRepo.addProduct(productBanana);
+        shopService.addProduct(productTomato);
+        shopService.addProduct(productApple);
+        shopService.addProduct(productBanana);
 
         // Create some OrderItems
         OrderItem orderItemTomato = new OrderItem(productBanana.id(), productTomato.name(), productTomato.price(), 5);
