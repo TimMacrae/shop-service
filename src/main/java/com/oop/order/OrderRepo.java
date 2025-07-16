@@ -9,14 +9,12 @@ public class OrderRepo implements OrderRepoInterface{
         orders.put(order.id(), order);
     }
 
-    public void removeOrder(UUID id) {
-        if(!orders.containsKey(id)) throw new NoSuchElementException("Order with id " + id + " does not exist");
-        orders.remove(id);
+    public void removeOrder(Order order) {
+        orders.remove(order.id());
     }
 
-    public Order getOrder(UUID id) {
-        if(!orders.containsKey(id)) throw new NoSuchElementException("Order with id " + id + " does not exist");
-        return orders.get(id);
+    public Optional<Order> getOrder(UUID id) {
+        return Optional.ofNullable( orders.get(id));
     }
 
     public List<Order> getOrders() {

@@ -9,16 +9,12 @@ public class OrderListRepo implements OrderRepoInterface{
         orders.add(order);
     }
 
-    public void removeOrder(UUID id) {
-        Order order = orders.stream().filter(o -> o.id().equals(id)).findFirst().orElse(null);
-        if(order == null) throw new NoSuchElementException("Order with id " + id + " does not exist");
+    public void removeOrder(Order order) {
         orders.remove(order);
     }
 
-    public Order getOrder(UUID id) {
-        Order order = orders.stream().filter(o -> o.id().equals(id)).findFirst().orElse(null);
-        if(order == null) throw new NoSuchElementException("Order with id " + id + " does not exist");
-        return order;
+    public Optional<Order> getOrder(UUID id) {
+        return orders.stream().filter(o -> o.id().equals(id)).findFirst();
     }
 
     public List<Order> getOrders() {
