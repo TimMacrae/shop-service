@@ -1,12 +1,15 @@
 package com.oop.service;
 
 import com.oop.order.Order;
+import com.oop.order.OrderRepo;
 import com.oop.order.OrderRepoInterface;
+import com.oop.order.OrderStatus;
 import com.oop.product.Product;
 import com.oop.product.ProductRepo;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ShopService implements OrderRepoInterface {
     private final OrderRepoInterface orderRepo;
@@ -63,6 +66,10 @@ public class ShopService implements OrderRepoInterface {
 
     public void addProduct(Product product) {
         productRepo.addProduct(product);
+    }
+
+    public List<Order> getOrdersWithOrderStatus(OrderStatus orderStatus) {
+        return orderRepo.getOrders().stream().filter(order -> orderStatus.equals(order.orderStatus())).collect(Collectors.toList());
     }
 
 }
