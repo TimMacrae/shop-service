@@ -1,9 +1,6 @@
 package com.oop.service;
 
-import com.oop.order.Order;
-import com.oop.order.OrderItem;
-import com.oop.order.OrderListRepo;
-import com.oop.order.OrderRepo;
+import com.oop.order.*;
 import com.oop.product.Product;
 import com.oop.product.ProductRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +26,9 @@ class ShopServiceTest {
 
     // Create some Orders
     Order order;
+    Order orderWithStatusProgress;
+    Order orderWithStatusInDelivery;
+    Order orderWithStatusCompleted;
 
 
     @BeforeEach
@@ -46,6 +46,20 @@ class ShopServiceTest {
              put(orderItem.productId(), orderItem);
              put(orderItem2.productId(), orderItem2);
          }});
+
+        orderWithStatusProgress = new Order(UUID.randomUUID(), new HashMap<>() {{
+            put(orderItem.productId(), orderItem);
+        }});
+
+        orderWithStatusInDelivery = new Order(UUID.randomUUID(), new HashMap<>() {{
+             put(orderItem.productId(), orderItem);
+             put(orderItem2.productId(), orderItem2);
+         }},null, OrderStatus.IN_DELIVERY);
+
+        orderWithStatusCompleted = new Order(UUID.randomUUID(), new HashMap<>() {{
+            put(orderItem.productId(), orderItem);
+        }},null, OrderStatus.COMPLETED);
+
     }
 
     @Test
@@ -191,6 +205,24 @@ class ShopServiceTest {
         assertEquals(2, shopService.getAllProducts().size());
         shopService.addProduct(product);
         assertEquals(2, shopService.getAllProducts().size());
+    }
+
+    @Test
+    void getOrdersWithOrderStatus_shouldReturnOrders_withOrderStatusOrEmptyList() {
+        shopService = new ShopService(orderRepo, productRepo);
+
+        assertEquals(0, shopService.getOrdersWithOrderStatus(OrderStatus.PROCESSING).size());
+        assertEquals(0, shopService.getOrdersWithOrderStatus(OrderStatus.IN_DELIVERY).size());
+        assertEquals(0, shopService.getOrdersWithOrderStatus(OrderStatus.COMPLETED).size());
+
+        shopService.placingOrder(order);
+        shopService.placingOrder(orderWithStatusProgress);
+        shopService.placingOrder(orderWithStatusCompleted);
+        shopService.placingOrder(orderWithStatusInDelivery);
+
+        assertEquals(2, shopService.getOrdersWithOrderStatus(OrderStatus.PROCESSING).size());
+        assertEquals(1, shopService.getOrdersWithOrderStatus(OrderStatus.IN_DELIVERY).size());
+        assertEquals(1, shopService.getOrdersWithOrderStatus(OrderStatus.COMPLETED).size());
     }
 
 
