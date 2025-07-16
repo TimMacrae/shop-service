@@ -4,14 +4,14 @@ This project is a simple Java backend for managing products and orders in a shop
 
 ## ✨ Features
 
-- ** Product Management**: Add, remove, and retrieve products with details like name, description, price, and stock quantity.
-- ** Order Management**: Create orders containing multiple items, each with its own quantity and price.
-- ** Stock Handling**: Automatically checks and updates product stock when orders are placed.
-- ** Immutability**: Uses Java records for immutable data structures (Product, Order, OrderItem).
-- **️ Repositories**: In-memory repositories for products and orders (both map-based and list-based implementations).
-- **️ Service Layer**: Business logic for placing orders, including validation and stock updates.
-- **️ Exception Handling**: Throws meaningful exceptions for missing products, insufficient stock, and invalid operations.
-- ** Unit Tests**: Comprehensive JUnit tests for all major components.
+- `Product Management`: Add, remove, and retrieve products with details like name, description, price, and stock quantity.
+- `Order Management`: Create orders containing multiple items, each with its own quantity and price.
+- `Stock Handling`: Automatically checks and updates product stock when orders are placed.
+- `Immutability`: Uses Java records for immutable data structures (Product, Order, OrderItem).
+- `️ Repositories`: In-memory repositories for products and orders (both map-based and list-based implementations).
+- `️ Service Layer`: Business logic for placing orders, including validation and stock updates.
+- `️ Exception Handling`: Throws meaningful exceptions for missing products, insufficient stock, and invalid operations.
+- `Unit Tests`: Comprehensive JUnit tests for all major components.
 
 ## 📁 Structure
 
