@@ -282,4 +282,31 @@ class ShopServiceTest {
         assertInstanceOf(Instant.class, shopService.getOrder(order.id()).orderDate());
     }
 
+    @Test
+    void getOldestOrderPerStatus_shouldReturnOldestOrderWithGivenStatus() {
+
+        shopService.placingOrder(order);
+        shopService.placingOrder(orderWithStatusCompleted);
+
+        Order oldest = shopService.getOldestOrderPerStatus(OrderStatus.PROCESSING);
+
+        assertEquals(shopService.getOrder(order.id()), oldest);
+    }
+
+    @Test
+    void getOldestOrderPerStatus_shouldReturnNullIfNoOrderWithStatus() {
+        Order result = shopService.getOldestOrderPerStatus(OrderStatus.COMPLETED);
+        assertNull(result);
+    }
+
+    @Test
+    void getOldestOrderPerStatus_shouldReturnOldestWhenMultipleOrdersWithSameStatus() {
+        shopService.placingOrder(order);
+        shopService.placingOrder(orderWithStatusInDelivery.withOrderStatus(OrderStatus.PROCESSING));
+        shopService.placingOrder(orderWithStatusProgress.withOrderStatus(OrderStatus.PROCESSING));
+
+        Order oldest = shopService.getOldestOrderPerStatus(OrderStatus.PROCESSING);
+        assertEquals(shopService.getOrder(order.id()), oldest);
+    }
+
 }
