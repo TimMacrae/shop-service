@@ -1,9 +1,12 @@
 package com.oop.order;
 
+import lombok.With;
+
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+@With
 public record Order(UUID id, Map<UUID, OrderItem> items, BigDecimal totalSum, OrderStatus orderStatus) {
 
     public Order(UUID id, Map<UUID, OrderItem> items) {
