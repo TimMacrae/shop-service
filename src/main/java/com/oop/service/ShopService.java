@@ -24,19 +24,14 @@ public class ShopService {
 
     public String placingOrder(Order order) {
         // Check if Products available and in stock
-        for (var item : order.items().entrySet()) {
-            var productId = item.getKey();
-            var orderItem = item.getValue();
-            // This will throw if not available or not enough in stock
-           checkAvailabilityAndStockQuantity(productId, orderItem.quantity());
-        }
+        order.items().forEach((productId, orderItem) ->
+                checkAvailabilityAndStockQuantity(productId, orderItem.quantity())
+        );
 
         // All products available now decrease stock and place order
-        for (var item : order.items().entrySet()) {
-            var productId = item.getKey();
-            var orderItem = item.getValue();
-            decreaseStockQuantity(productId, orderItem.quantity());
-        }
+        order.items().forEach((productId, orderItem) ->
+                decreaseStockQuantity(productId, orderItem.quantity())
+        );
 
         orderRepo.addOrder(order);
         return "Order placed successfully, the total sum is: " + order.totalSum() + " 💰";
@@ -60,6 +55,13 @@ public class ShopService {
         return orderRepo.getOrders();
     }
 
+    public Order updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
+        Order order = getOrder(orderId);
+        Order updatedOrder = order.withOrderStatus(orderStatus);
+        orderRepo.removeOrder(order);
+        orderRepo.addOrder(updatedOrder);
+        return updatedOrder;
+    }
 
     // ProductRepo
     public void addProduct(Product product) {
@@ -78,11 +80,12 @@ public class ShopService {
         return orderRepo.getOrders().stream().filter(order -> orderStatus.equals(order.orderStatus())).collect(Collectors.toList());
     }
 
+
+    // Helper
     public void checkAvailabilityAndStockQuantity (UUID id, int quantity) {
         Product product = getProduct(id);
         if(product.stockQuantity() < quantity) throw new ProductWithTheIdIsOutOfStock(id);
     }
-
 
     public Product decreaseStockQuantity(UUID id, int quantity) {
         Product product = getProduct(id);

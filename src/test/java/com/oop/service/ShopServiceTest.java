@@ -252,5 +252,21 @@ class ShopServiceTest {
 
     }
 
+    @Test
+    void updateOrderStatus_ShouldUpdateOrderStatusToGivenStatus() {
+        shopService.placingOrder(order);
+        assertEquals(OrderStatus.PROCESSING, shopService.getOrder(order.id()).orderStatus());
+
+        shopService.updateOrderStatus(order.id(), OrderStatus.IN_DELIVERY);
+        assertEquals(OrderStatus.IN_DELIVERY, shopService.getOrder(order.id()).orderStatus());
+
+        shopService.updateOrderStatus(order.id(), OrderStatus.COMPLETED);
+        assertEquals(OrderStatus.COMPLETED, shopService.getOrder(order.id()).orderStatus());
+    }
+
+    @Test
+    void updateOrderStatus_ShouldThrowAnException_whenOrderIdDoesNotExist() {
+        assertThrows(OrderWithTheIdNotFound.class, () -> shopService.updateOrderStatus(UUID.randomUUID(), OrderStatus.PROCESSING));
+    }
 
 }
