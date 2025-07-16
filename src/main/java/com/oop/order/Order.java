@@ -10,10 +10,6 @@ public record Order(UUID id, Map<UUID, OrderItem> items, BigDecimal totalSum, Or
         this(id, items, calculateTotalSum(items), OrderStatus.PROCESSING);
     }
 
-    public Order(UUID id, Map<UUID, OrderItem> items, BigDecimal totalSum) {
-        this(id, items, calculateTotalSum(items), OrderStatus.PROCESSING);
-    }
-
     private static BigDecimal calculateTotalSum(Map<UUID, OrderItem> items) {
         if (items == null) return BigDecimal.ZERO;
         return items.values().stream()
