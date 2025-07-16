@@ -1,5 +1,6 @@
 package com.oop.order;
 
+import com.oop.exception.OrderWithTheIdNotFound;
 import com.oop.product.Product;
 import com.oop.product.ProductRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,15 +34,15 @@ class OrderRepoTest {
     @Test
     void addOrder_shouldAddAOrder_toOrders() {
         orderRepo.addOrder(order);
-        Order addedOrder = orderRepo.getOrder(order.id());
-        assertEquals(addedOrder, orderRepo.getOrder(order.id()));
+        Order addedOrder = orderRepo.getOrder(order.id()).orElseThrow();
+        assertEquals(addedOrder, orderRepo.getOrder(order.id()).orElseThrow());
     }
 
     @Test
     void removeOrder_shouldRemoveAOrder_fromOrders() {
         orderRepo.addOrder(order);
         assertEquals(1, orderRepo.getOrders().size());
-        orderRepo.removeOrder(order.id());
+        orderRepo.removeOrder(order);
         assertEquals(0, orderRepo.getOrders().size());
     }
 
@@ -49,7 +50,7 @@ class OrderRepoTest {
     void removeOrder_shouldRemoveTheCorrectOrder_fromOrders() {
         orderRepo.addOrder(order);
         orderRepo.addOrder(order2);
-        orderRepo.removeOrder(order.id());
+        orderRepo.removeOrder(order);
 
         List<Order> allOrders = orderRepo.getOrders();
 
@@ -57,24 +58,17 @@ class OrderRepoTest {
         assertTrue(allOrders.contains(order2));
     }
 
-    @Test
-    void removeOrder_shouldThrowAnException_whenOrderDoesNotExist() {
-        UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> orderRepo.removeOrder(id));
-        assertEquals("Order with id " + id + " does not exist", exception.getMessage());
-    }
 
     @Test
     void getOrder_shouldReturnOrder_fromOrdersRepo() {
         orderRepo.addOrder(order);
-        assertEquals(order, orderRepo.getOrder(order.id()));
+        assertEquals(order, orderRepo.getOrder(order.id()).orElseThrow());
     }
 
     @Test
     void getOrder_shouldThrowAnException_ifOrderDoesNotExist() {
         UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> orderRepo.getOrder(id));
-        assertEquals("Order with id " + id + " does not exist", exception.getMessage());
+        assertThrows(NoSuchElementException.class, () ->  orderRepo.getOrder(id).orElseThrow());
     }
 
     @Test

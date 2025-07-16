@@ -31,15 +31,15 @@ class OrderListRepoTest {
     @Test
     void addOrder_shouldAddAOrder_toOrders() {
         orderListRepo.addOrder(order);
-        Order addedOrder = orderListRepo.getOrder(order.id());
-        assertEquals(addedOrder, orderListRepo.getOrder(order.id()));
+        Order addedOrder = orderListRepo.getOrder(order.id()).orElseThrow();
+        assertEquals(addedOrder, orderListRepo.getOrder(order.id()).orElseThrow());
     }
 
     @Test
     void removeOrder_shouldRemoveAOrder_fromOrders() {
         orderListRepo.addOrder(order);
         assertEquals(1, orderListRepo.getOrders().size());
-        orderListRepo.removeOrder(order.id());
+        orderListRepo.removeOrder(order);
         assertEquals(0, orderListRepo.getOrders().size());
     }
 
@@ -47,7 +47,7 @@ class OrderListRepoTest {
     void removeOrder_shouldRemoveTheCorrectOrder_fromOrders() {
         orderListRepo.addOrder(order);
         orderListRepo.addOrder(order2);
-        orderListRepo.removeOrder(order.id());
+        orderListRepo.removeOrder(order);
 
         List<Order> allOrders = orderListRepo.getOrders();
 
@@ -55,24 +55,17 @@ class OrderListRepoTest {
         assertTrue(allOrders.contains(order2));
     }
 
-    @Test
-    void removeOrder_shouldThrowAnException_whenOrderDoesNotExist() {
-        UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> orderListRepo.removeOrder(id));
-        assertEquals("Order with id " + id + " does not exist", exception.getMessage());
-    }
 
     @Test
     void getOrder_shouldReturnOrder_fromOrdersRepo() {
         orderListRepo.addOrder(order);
-        assertEquals(order, orderListRepo.getOrder(order.id()));
+        assertEquals(order, orderListRepo.getOrder(order.id()).orElseThrow());
     }
 
     @Test
     void getOrder_shouldThrowAnException_ifOrderDoesNotExist() {
         UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> orderListRepo.getOrder(id));
-        assertEquals("Order with id " + id + " does not exist", exception.getMessage());
+        assertThrows(NoSuchElementException.class, () ->  orderListRepo.getOrder(id).orElseThrow());
     }
 
     @Test
