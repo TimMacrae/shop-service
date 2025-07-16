@@ -24,6 +24,8 @@ class OrderTest {
         BigDecimal expected = item1.price().multiply(BigDecimal.valueOf(item1.quantity()))
                 .add(item2.price().multiply(BigDecimal.valueOf(item2.quantity())));
         assertEquals(expected, order.totalSum());
+        assertEquals(OrderStatus.PROCESSING, order.orderStatus());
+        assertNotEquals(OrderStatus.IN_DELIVERY, order.orderStatus());
     }
 
     @Test
@@ -42,6 +44,8 @@ class OrderTest {
 
         assertEquals(expected, updatedOrder.totalSum());
         assertNotEquals(order, updatedOrder);
+        assertEquals(OrderStatus.PROCESSING, updatedOrder.orderStatus());
+        assertNotEquals(OrderStatus.COMPLETED, updatedOrder.orderStatus());
     }
 
     @Test
@@ -50,6 +54,8 @@ class OrderTest {
         Map<UUID, OrderItem> items = new HashMap<>();
         Order order = new Order(id, items);
         assertEquals(BigDecimal.ZERO, order.totalSum());
+        assertEquals(OrderStatus.PROCESSING, order.orderStatus());
+        assertNotEquals(OrderStatus.COMPLETED, order.orderStatus());
     }
 }
 
