@@ -3,14 +3,15 @@ package com.oop.order;
 import lombok.With;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
 @With
-public record Order(UUID id, Map<UUID, OrderItem> items, BigDecimal totalSum, OrderStatus orderStatus) {
+public record Order(UUID id, Map<UUID, OrderItem> items, BigDecimal totalSum, OrderStatus orderStatus, Instant orderDate) {
 
     public Order(UUID id, Map<UUID, OrderItem> items) {
-        this(id, items, calculateTotalSum(items), OrderStatus.PROCESSING);
+        this(id, items, calculateTotalSum(items), OrderStatus.PROCESSING, null);
     }
 
     private static BigDecimal calculateTotalSum(Map<UUID, OrderItem> items) {
@@ -21,6 +22,6 @@ public record Order(UUID id, Map<UUID, OrderItem> items, BigDecimal totalSum, Or
     }
 
     public Order withItems(Map<UUID, OrderItem> newItems) {
-        return new Order(this.id, newItems, calculateTotalSum(newItems), this.orderStatus);
+        return new Order(this.id, newItems, calculateTotalSum(newItems), this.orderStatus, this.orderDate);
     }
 }
