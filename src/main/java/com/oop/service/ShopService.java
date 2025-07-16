@@ -83,6 +83,13 @@ public class ShopService {
         return orderRepo.getOrders().stream().filter(order -> orderStatus.equals(order.orderStatus())).collect(Collectors.toList());
     }
 
+    public Order getOldestOrderPerStatus(OrderStatus orderStatus) {
+        return orderRepo.getOrders().stream()
+                .filter(order -> orderStatus.equals(order.orderStatus()))
+                .min((o1, o2) -> o1.orderDate().compareTo(o2.orderDate()))
+                .orElse(null);
+    }
+
 
     // Helper
     public void checkAvailabilityAndStockQuantity (UUID id, int quantity) {
