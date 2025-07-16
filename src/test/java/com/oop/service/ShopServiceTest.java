@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,11 +58,11 @@ class ShopServiceTest {
         orderWithStatusInDelivery = new Order(UUID.randomUUID(), new HashMap<>() {{
             put(orderItem.productId(), orderItem);
             put(orderItem2.productId(), orderItem2);
-        }}, null, OrderStatus.IN_DELIVERY);
+        }}, null, OrderStatus.IN_DELIVERY,null);
 
         orderWithStatusCompleted = new Order(UUID.randomUUID(), new HashMap<>() {{
             put(orderItem.productId(), orderItem);
-        }}, null, OrderStatus.COMPLETED);
+        }}, null, OrderStatus.COMPLETED, null);
 
     }
 
@@ -267,6 +268,18 @@ class ShopServiceTest {
     @Test
     void updateOrderStatus_ShouldThrowAnException_whenOrderIdDoesNotExist() {
         assertThrows(OrderWithTheIdNotFound.class, () -> shopService.updateOrderStatus(UUID.randomUUID(), OrderStatus.PROCESSING));
+    }
+
+    @Test
+    void placeOrder_ShouldAddTheOrderDate_whenPlacingAnOrder() {
+       Order order = new Order(UUID.randomUUID(), new HashMap<>() {{
+            put(orderItem.productId(), orderItem);
+            put(orderItem2.productId(), orderItem2);
+        }});
+        assertNull(order.orderDate());
+        shopService.placingOrder(order);
+        assertNotNull(shopService.getOrder(order.id()).orderDate());
+        assertInstanceOf(Instant.class, shopService.getOrder(order.id()).orderDate());
     }
 
 }
