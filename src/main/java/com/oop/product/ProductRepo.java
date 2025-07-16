@@ -1,6 +1,9 @@
 package com.oop.product;
 
 
+import com.oop.exception.ProductWithIdNotFound;
+import com.oop.exception.ProductWithTheIdIsOutOfStock;
+
 import java.util.*;
 
 public class ProductRepo {
@@ -11,35 +14,20 @@ public class ProductRepo {
     }
 
     public void removeProduct(UUID id) {
-        if(!products.containsKey(id)) throw new NoSuchElementException("Product with id " + id + " does not exist");
+        if(!products.containsKey(id)) throw new ProductWithIdNotFound(id);
         products.remove(id);
     }
 
-    public Product getProduct(UUID id) {
-        Product product = this.products.get(id);
+    public Optional<Product> getProduct(UUID id) {
+        return Optional.ofNullable(products.get(id));
+    }
 
-        if(product == null) throw new NoSuchElementException("Product with id " + id + " does not exist");
-        return product;
+    public Map<UUID, Product> getProducts() {
+        return products;
     }
 
     public List<Product> getAllProducts() {
         return new ArrayList<>(this.products.values());
     }
 
-
-    public void checkAvailabilityAndStockQuantity (UUID id, int quantity) {
-       Product product = getProduct(id);
-       if(product.stockQuantity() < quantity) throw new IllegalArgumentException("Product with id " + id + " out of stock");
-    }
-
-
-    public Product decreaseStockQuantity(UUID id, int quantity) {
-        Product product = getProduct(id);
-        int newStockQuantity = product.stockQuantity() - quantity;
-        if (newStockQuantity < 0) throw new IllegalArgumentException("Product with id " + id + " out of stock");
-
-        Product updatedProduct = new Product(product.id(), product.name(),product.description(), product.price(), newStockQuantity);
-        products.put(id, updatedProduct);
-        return updatedProduct;
-    }
 }

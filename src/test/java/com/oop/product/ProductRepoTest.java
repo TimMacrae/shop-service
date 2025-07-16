@@ -1,5 +1,6 @@
 package com.oop.product;
 
+import com.oop.exception.ProductWithIdNotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +25,9 @@ class ProductRepoTest {
     @Test
     void addProduct_shouldAddAProduct_toProducts() {
         productRepo.addProduct(product);
-        Product addedProduct = productRepo.getProduct(product.id());
-        assertEquals(addedProduct, productRepo.getProduct(product.id()));
+        Product addedProduct = productRepo.getProduct(product.id()).orElseThrow();
+
+        assertEquals(addedProduct, productRepo.getProduct(product.id()).orElseThrow());
     }
 
     @Test
@@ -53,21 +55,20 @@ class ProductRepoTest {
     @Test
     void removeProduct_shouldThrowAnException_whenProductDoesNotExist() {
         UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> productRepo.removeProduct(id));
-        assertEquals("Product with id " + id + " does not exist", exception.getMessage());
+        ProductWithIdNotFound exception = assertThrows(ProductWithIdNotFound.class, () -> productRepo.removeProduct(id));
+        assertEquals("Product with id " + id + " not found", exception.getMessage());
     }
 
     @Test
     void getProduct_shouldReturnProduct_fromProductRepo() {
         productRepo.addProduct(product);
-        assertEquals(product, productRepo.getProduct(product.id()));
+        assertEquals(product, productRepo.getProduct(product.id()).orElseThrow());
     }
 
     @Test
-    void getProduct_shouldThrowAnException_ifProductDoesNotExist() {
+    void getProduct_shouldReturnEmptyOptional_ifProductDoesNotExist() {
         UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> productRepo.getProduct(id));
-        assertEquals("Product with id " + id + " does not exist", exception.getMessage());
+        assertTrue(productRepo.getProduct(id).isEmpty());
     }
 
     @Test
@@ -80,42 +81,5 @@ class ProductRepoTest {
         assertEquals(2, productRepo.getAllProducts().size());
     }
 
-    @Test
-    void checkAvailabilityAndStockQuantity_shouldThrowAnException_whenProductDoesNotExist() {
-        UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> productRepo.checkAvailabilityAndStockQuantity(id,30));
-        assertEquals("Product with id " + id + " does not exist", exception.getMessage());
-    }
 
-    @Test
-    void checkAvailabilityAndStockQuantity_shouldThrowAnException_whenStockQuantityIsNotEnough() {
-        productRepo.addProduct(product);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> productRepo.checkAvailabilityAndStockQuantity(product.id(),50));
-        assertEquals("Product with id " + product.id() + " out of stock", exception.getMessage());
-    }
-
-    @Test
-    void decreaseStockQuantity_shouldThrowAnException_whenProductDoesNotExist() {
-        UUID id = UUID.randomUUID();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> productRepo.decreaseStockQuantity(id,30));
-        assertEquals("Product with id " + id + " does not exist", exception.getMessage());
-    }
-
-    @Test
-    void decreaseStockQuantity_shouldThrowAnException_whenStockQuantityIsNotEnough() {
-        productRepo.addProduct(product);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> productRepo.checkAvailabilityAndStockQuantity(product.id(),100));
-        assertEquals("Product with id " + product.id() + " out of stock", exception.getMessage());
-    }
-
-
-    @Test
-    void decreaseStockQuantity_shouldDecreaseStockQuantity_whenStockQuantityIsEnough() {
-        productRepo.addProduct(product);
-        Product decreasedProduct =  productRepo.decreaseStockQuantity(product.id(),30);
-        Product updatedProduct = productRepo.getProduct(product.id());
-        assertEquals(decreasedProduct, updatedProduct);
-
-
-    }
 }
