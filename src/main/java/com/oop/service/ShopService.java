@@ -9,6 +9,7 @@ import com.oop.order.OrderStatus;
 import com.oop.product.Product;
 import com.oop.product.ProductRepo;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,6 +34,8 @@ public class ShopService {
                 decreaseStockQuantity(productId, orderItem.quantity())
         );
 
+        // Add order date to the order
+        order = order.withOrderDate(Instant.now());
         orderRepo.addOrder(order);
         return "Order placed successfully, the total sum is: " + order.totalSum() + " 💰";
     }
